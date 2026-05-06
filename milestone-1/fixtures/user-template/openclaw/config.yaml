@@ -1,0 +1,10 @@
+# Default user template for milestone-1 prototype.
+# This file is what gets seeded into a new user's workspace.
+# Real openclaw config should mirror this minimal shape until validation
+# whitelist is extended.
+
+agent:
+  model: claude-haiku-4-5
+  max_tokens: 2000
+  system_prompt: prompts/system.md
+  # `effort` only valid on Opus 4.5+ and Sonnet 4.6 — leave unset for Haiku
