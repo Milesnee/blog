@@ -1,10 +1,14 @@
-# Default user template for milestone-1 prototype.
-# This file is what gets seeded into a new user's workspace.
-# Real openclaw config should mirror this minimal shape until validation
-# whitelist is extended.
+# Default user template — what gets seeded when a new user is created.
+# These files live under /data/users/{uid}/openclaw/ after seeding and become
+# the user's asset (per the "user-owned config" promise). The user may edit
+# any field within the constraints enforced by config-validator + provider-router.
 
 agent:
-  model: claude-haiku-4-5
+  # provider: optional. If unset, the dispatcher decides based on user region.
+  # Allowed: deepseek (cn), doubao (cn), anthropic (overseas).
+  # provider: deepseek
+  model: deepseek-chat       # whitelisted by the chosen provider
   max_tokens: 2000
   system_prompt: prompts/system.md
-  # `effort` only valid on Opus 4.5+ and Sonnet 4.6 — leave unset for Haiku
+  # effort: only meaningful for some Anthropic Opus/Sonnet models.
+  # effort: medium

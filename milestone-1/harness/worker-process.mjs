@@ -80,8 +80,16 @@ export class Worker {
     });
   }
 
-  async init() {
-    this.send({ type: 'init', user_id: this.userId, workspace: '/home/user' });
+  async init({ region = 'cn-mainland', tier = 'free', budget } = {}) {
+    const msg = {
+      type: 'init',
+      user_id: this.userId,
+      workspace: '/home/user',
+      region,
+      tier,
+    };
+    if (budget) msg.budget = budget;
+    this.send(msg);
     return this.waitFor(['ready', 'error']);
   }
 

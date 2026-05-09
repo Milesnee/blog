@@ -5,8 +5,10 @@
 # mounted at /home/user. Worker reads NDJSON from stdin, writes NDJSON to
 # stdout, logs to stderr.
 #
-# Required env:
-#   ANTHROPIC_API_KEY    passed through to worker
+# Required env (at least one provider key, depending on the user's region):
+#   ANTHROPIC_API_KEY    overseas users (Claude)
+#   DEEPSEEK_API_KEY     cn-mainland users (DeepSeek)
+#   DOUBAO_API_KEY       cn-mainland users (Volcengine ARK / Doubao)
 # Optional env:
 #   MILESTONE1_DATA_DIR  user data root, default /tmp/milestone-1-data
 #   MILESTONE1_REPO      milestone-1 repo dir, default = parent of this script
@@ -30,7 +32,12 @@ if [[ ! -d $REPO/node_modules ]]; then
   exit 1
 fi
 
-: "${ANTHROPIC_API_KEY:?ANTHROPIC_API_KEY required}"
+# At least one provider key must be present; the worker will fail at init
+# if the user's config requires an unset provider's key.
+if [[ -z ${ANTHROPIC_API_KEY:-} && -z ${DEEPSEEK_API_KEY:-} && -z ${DOUBAO_API_KEY:-} ]]; then
+  echo "no provider API key set (need at least one of ANTHROPIC_API_KEY, DEEPSEEK_API_KEY, DOUBAO_API_KEY)" >&2
+  exit 1
+fi
 
 exec bwrap \
   --ro-bind /usr /usr \
@@ -52,7 +59,12 @@ exec bwrap \
   --setenv USER worker \
   --setenv USER_ID "$USER_ID" \
   --setenv WORKER_WORKSPACE /home/user \
-  --setenv ANTHROPIC_API_KEY "$ANTHROPIC_API_KEY" \
+  --setenv ANTHROPIC_API_KEY "${ANTHROPIC_API_KEY:-}" \
+  --setenv DEEPSEEK_API_KEY "${DEEPSEEK_API_KEY:-}" \
+  --setenv DOUBAO_API_KEY "${DOUBAO_API_KEY:-}" \
+  --setenv ARK_API_KEY "${ARK_API_KEY:-}" \
+  --setenv DEEPSEEK_BASE_URL "${DEEPSEEK_BASE_URL:-}" \
+  --setenv DOUBAO_BASE_URL "${DOUBAO_BASE_URL:-}" \
   --setenv NODE_ENV production \
   --setenv PATH "$NODE_PREFIX/bin:/usr/bin:/bin" \
   --die-with-parent --new-session \
