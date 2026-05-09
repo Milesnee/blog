@@ -1,0 +1,24 @@
+{
+  "name": "openclaw-gateway-milestone-1",
+  "version": "0.1.0",
+  "description": "Milestone 1: Worker prototype + memory measurement for multi-user openclaw gateway",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "worker": "node worker/worker.mjs",
+    "driver": "node harness/driver.mjs",
+    "scenario:a": "node harness/driver.mjs A",
+    "scenario:b": "node harness/driver.mjs B",
+    "scenario:c": "node harness/driver.mjs C",
+    "scenario:d": "node harness/driver.mjs D",
+    "scenario:e": "node harness/driver.mjs E",
+    "scenario:all": "node harness/driver.mjs all"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.94.0",
+    "yaml": "^2.6.0"
+  }
+}
