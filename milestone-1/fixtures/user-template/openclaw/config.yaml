@@ -1,14 +1,34 @@
-# Default user template — what gets seeded when a new user is created.
-# These files live under /data/users/{uid}/openclaw/ after seeding and become
-# the user's asset (per the "user-owned config" promise). The user may edit
-# any field within the constraints enforced by config-validator + provider-router.
+# 小澄 · 用户配置模板
+# Smiling Tech
+#
+# 这份配置在用户首次注册时被 seed 到 /data/users/{uid}/openclaw/。
+# 之后用户可以编辑，但所有改动会被 worker 在 init 时按白名单校验。
+# 详见 docs/memory-schema-v1.md 与 SOUL.md。
 
 agent:
-  # provider: optional. If unset, the dispatcher decides based on user region.
-  # Allowed: deepseek (cn), doubao (cn), anthropic (overseas).
+  # provider 通常由 dispatcher 根据 user.region 决定，用户一般不设。
+  # 大陆: deepseek (推荐) / doubao
+  # 海外: anthropic
   # provider: deepseek
-  model: deepseek-chat       # whitelisted by the chosen provider
+
+  # 模型默认走 DeepSeek V3 的 chat 端点。可在白名单内换：
+  # deepseek/[deepseek-chat | deepseek-reasoner]
+  # doubao/[doubao-1-5-pro-32k | doubao-1-5-pro-256k | doubao-1-5-lite-32k]
+  # anthropic/[claude-haiku-4-5 | claude-sonnet-4-6 | claude-opus-4-7 | claude-opus-4-6]
+  model: deepseek-chat
+
+  # 单次回应的 token 上限。小澄风格本来就短，2000 远够用。
   max_tokens: 2000
-  system_prompt: prompts/system.md
-  # effort: only meaningful for some Anthropic Opus/Sonnet models.
+
+  # 系统提示词文件——这是小澄的灵魂，不要随便改。
+  system_prompt: SOUL.md
+
+  # effort: 仅 Anthropic Opus/Sonnet 4.6+ 支持。其余模型不要设。
   # effort: medium
+
+# 后续（M2+）可加的字段：
+#   skills_enabled: [knowledge, life, study, fitness]   # 启用的 skills
+#   liushishu:
+#     timebands: [...]                                   # 用户的时段定制
+#   memory:
+#     facts_inject_max: 30                                # 每次注入多少条 fact
